@@ -119,7 +119,7 @@ Apache Kafka
 
 ### Структура базы данных:
 
-![](screens/Схема БД.png)
+![](https://github.com/AlekseyPetkun/TransportTicketApp/blob/master/screens/БД%20producer.png)
 
 ### Consumer:
 
@@ -134,12 +134,11 @@ Mapstruct\
 OpenAPI\
 JUnit\
 Mockito\
-Docker\
 Apache Kafka
 
 ### Структура базы данных:
 
-![](screens/Схема БД.png)
+![](https://github.com/AlekseyPetkun/TransportTicketApp/blob/master/screens/БД%20consumer.png)
 
 ##
 
