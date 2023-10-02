@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Consumer {
 
-    private static final String orderTopic = "t.ticket.order";
+    private static final String orderTopic = "${topic.name}";
 
     private final ObjectMapper objectMapper;
     private final TicketService ticketService;
