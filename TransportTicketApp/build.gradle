@@ -1,0 +1,72 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version "$springBootVersion"
+	id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
+}
+
+group = 'com.github.alekseypetkun'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation "org.springframework.boot:spring-boot-starter-validation:$validationVersion"
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
+	implementation 'com.zaxxer:HikariCP:5.0.1'
+
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
+	implementation 'redis.clients:jedis:4.4.3'
+
+	implementation "org.postgresql:postgresql:$postgreSqlVersion"
+
+	implementation 'org.flywaydb:flyway-core'
+//    implementation "org.flywaydb:flyway-core:$flywayDbVersion"
+	implementation "com.google.code.findbugs:jsr305:$googleFindBugsVersion"
+
+	implementation "org.mapstruct:mapstruct:$mapStructVersion"
+
+	//implementation "io.jsonwebtoken:jjwt:$jsonWebTokenVersion"
+	implementation "io.jsonwebtoken:jjwt-api:$jsonWebTokenVersion"
+	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	//runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+	runtimeOnly "io.jsonwebtoken:jjwt-impl:$jsonWebTokenVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-jackson:$jsonWebTokenVersion"
+	implementation "javax.xml.bind:jaxb-api:$jaxbApiVersion"
+
+	implementation "org.projectlombok:lombok:$lombokVersion"
+
+	compileOnly('org.projectlombok:lombok')
+	annotationProcessor "org.projectlombok:lombok"
+	annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
