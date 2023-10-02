@@ -1,0 +1,32 @@
+#Server
+server:
+  port: 8069
+
+topic:
+  name: t.ticket.order
+
+#DataBase
+spring:
+
+  kafka:
+    consumer:
+      group-id: "default"
+
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+  config:
+    import: optional:file:consumer.env[.properties]
+
+  datasource:
+    url: ${POSTGRES_DB_URL}
+    username: ${POSTGRES_DB_USER}
+    password: ${POSTGRES_DB_PASSWORD}
+
+  flyway:
+    url: ${POSTGRES_DB_URL}
+    locations: classpath:db/migration
+    user: ${POSTGRES_DB_USER}
+    password: ${POSTGRES_DB_PASSWORD}
+    validate-migration-naming: true

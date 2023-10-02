@@ -1,0 +1,1115 @@
+openapi: 3.0.3
+info:
+  version: '1.0'
+  title: TransportTicketsMicroservicesApplication
+  description: Веб-приложение для предоставления возможностей пользователям покупать
+    транспортные билеты
+servers:
+  - url: http://localhost:8070
+    description: Generated server url
+paths:
+  /api/tickets:
+    get:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Получить все свободные билеты
+      operationId: getAllTickets
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Получен список свободных билетов (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperTickets'
+        "404":
+          description: Список билетов не получен (Not Found)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperTickets'
+    post:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Создание нового билета
+      description: Нужно заполнить параметры для создания
+      operationId: createCarrier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicket'
+        required: true
+      responses:
+        "201":
+          description: Билет добавлен (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+        "400":
+          description: "Билет не добавлен, т.к. не прошел валидацию (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+  /api/routes:
+    get:
+      tags:
+        - API по работе с маршрутами
+      summary: Получить все маршруты
+      operationId: getAllRoutes
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Получен список маршрутов (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperRoutes'
+        "404":
+          description: Список маршрутов не получен (Not Found)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperRoutes'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperRoutes'
+    post:
+      tags:
+        - API по работе с маршрутами
+      summary: Создание нового маршрута
+      description: Нужно заполнить параметры для создания
+      operationId: createCarrier_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoute'
+        required: true
+      responses:
+        "201":
+          description: Маршрут добавлен (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+        "400":
+          description: "Маршрут не добавлен, т.к. не прошел валидацию (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+  /api/carriers:
+    get:
+      tags:
+        - API по работе с перевозчиками
+      summary: Получить всех перевозчиков
+      operationId: getAllCarriers
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Получен список перевозчиков (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperCarriers'
+        "404":
+          description: Список перевозчиков не получен (Not Found)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperCarriers'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperCarriers'
+    post:
+      tags:
+        - API по работе с перевозчиками
+      summary: Регистрация нового перевозчика
+      description: Нужно заполнить параметры для регистрации
+      operationId: createCarrier_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCarrier'
+        required: true
+      responses:
+        "201":
+          description: Перевозчик зарегистрирован (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+        "400":
+          description: "Перевозчик не зарегистрирован, т.к. не прошел валидацию (Bad\
+            \ Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+  /api/auth/token:
+    post:
+      tags:
+        - API по работе с авторизацией и регистрацией
+      operationId: getNewAccessToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshJwtRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /api/auth/register:
+    post:
+      tags:
+        - API по работе с авторизацией и регистрацией
+      summary: Регистрация нового пользователя
+      description: Нужно заполнить параметры для регистрации
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        "201":
+          description: Пользователь зарегистрирован (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterRequest'
+        "400":
+          description: "Пользователь не зарегистрирован, т.к. не прошел валидацию\
+            \ (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        "500":
+          description: "Пользователь не зарегистрирован, т.к. такая почта уже суще\
+            ствует (Internal Server Error)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/auth/refresh:
+    post:
+      tags:
+        - API по работе с авторизацией и регистрацией
+      operationId: getNewRefreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshJwtRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /api/auth/login:
+    post:
+      tags:
+        - API по работе с авторизацией и регистрацией
+      summary: Авторизация пользователя
+      description: Нужно заполнить параметры для авторизации
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: Пользователь авторизирован (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginRequest'
+        "403":
+          description: "Пользователь не авторизирован, т.к. ввел неправильные знач\
+            ения (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /api/users/me:
+    patch:
+      tags:
+        - API по работе с пользователями
+      summary: Обновить информацию о пользователе
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+        required: true
+      responses:
+        "200":
+          description: Информация успешно обновилась (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        "401":
+          description: "Информация не обновилась, т.к. пользователь не авторизован\
+            \ (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        "403":
+          description: "Информация не обновилась, т.к. у пользователя нет прав на\
+            \ это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/tickets/{ticketId}:
+    delete:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Удалить билет по его идентификатору
+      operationId: deleteTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Билет удален (No Content)
+        "401":
+          description: "Билет не удален, т.к. пользователь не авторизован (Unauthorized)"
+        "403":
+          description: "Билет не удален, т.к. у пользователя нет прав на это (Forbidden)"
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+    patch:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Обновить информацию о билете по его идентификатору
+      operationId: updateTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicket'
+        required: true
+      responses:
+        "200":
+          description: Информация успешно обновилась (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+        "401":
+          description: "Информация не обновилась, т.к. пользователь не авторизован\
+            \ (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+        "403":
+          description: "Информация не обновилась, т.к. у пользователя нет прав на\
+            \ это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+  /api/tickets/cansel/{ticketId}:
+    patch:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Вернуть билет по его идентификатору
+      operationId: canselBuyTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Возврат успешно оформлен (No Content)
+        "401":
+          description: "Возврат не оформлен, т.к. пользователь не авторизован (Unauthorized)"
+        "403":
+          description: "Возврат не оформлен, т.к. у пользователя нет прав на это (Forbidden)"
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+  /api/tickets/buy/{ticketId}:
+    patch:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Купить билет по его идентификатору
+      operationId: buyTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Билет успешно куплен (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerTicketDto'
+        "401":
+          description: "Билет не куплен, т.к. пользователь не авторизован (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuyerTicketDto'
+        "403":
+          description: "Билет не куплен, т.к. у пользователя нет прав на это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuyerTicketDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BuyerTicketDto'
+  /api/routes/{routeId}:
+    delete:
+      tags:
+        - API по работе с маршрутами
+      summary: Удалить маршрут по его идентификатору
+      operationId: deleteRoute
+      parameters:
+        - name: routeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Маршрут удален (No Content)
+        "401":
+          description: "Маршрут не удален, т.к. пользователь не авторизован (Unauthorized)"
+        "403":
+          description: "Маршрут не удален, т.к. у пользователя нет прав на это (Forbidden)"
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+    patch:
+      tags:
+        - API по работе с маршрутами
+      summary: Обновить информацию о маршруте по его идентификатору
+      operationId: updateRoute
+      parameters:
+        - name: routeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoute'
+        required: true
+      responses:
+        "200":
+          description: Информация успешно обновилась (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+        "401":
+          description: "Информация не обновилась, т.к. пользователь не авторизован\
+            \ (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+        "403":
+          description: "Информация не обновилась, т.к. у пользователя нет прав на\
+            \ это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RouteDto'
+  /api/carriers/{carrierId}:
+    delete:
+      tags:
+        - API по работе с перевозчиками
+      summary: Удалить перевозчика по его идентификатору
+      operationId: deleteCarrier
+      parameters:
+        - name: carrierId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Перевозчик удален (No Content)
+        "401":
+          description: "Перевозчик не удален, т.к. пользователь не авторизован (Unauthorized)"
+        "403":
+          description: "Перевозчик не удален, т.к. у пользователя нет прав на это\
+            \ (Forbidden)"
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+    patch:
+      tags:
+        - API по работе с перевозчиками
+      summary: Обновить информацию о перевозчике по его идентификатору
+      operationId: updateCarrier
+      parameters:
+        - name: carrierId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCarrier'
+        required: true
+      responses:
+        "200":
+          description: Информация успешно обновилась (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+        "401":
+          description: "Информация не обновилась, т.к. пользователь не авторизован\
+            \ (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+        "403":
+          description: "Информация не обновилась, т.к. у пользователя нет прав на\
+            \ это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CarrierDto'
+  /api/users:
+    get:
+      tags:
+        - API по работе с пользователями
+      summary: Получить всех пользователей
+      operationId: getAllUsers
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Получен список пользователей (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperUsers'
+        "404":
+          description: Список пользователей не получен (Not Found)
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperUsers'
+  /api/tickets/me:
+    get:
+      tags:
+        - API по работе с покупкой билетов
+      summary: Получить купленные билеты авторизованного пользователя
+      operationId: getAllMeTickets
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Информация успешно получена (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperTickets'
+        "401":
+          description: "Информация не получена, т.к. пользователь не авторизован (Unauthorized)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperBuyerTickets'
+        "403":
+          description: "Информация не обновилась, т.к. у пользователя нет прав на\
+            \ это (Forbidden)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperBuyerTickets'
+  /api/auth/info:
+    get:
+      tags:
+        - API по работе с авторизацией и регистрацией
+      summary: Получить информацию о пользователе
+      description: Нужно ввести валидный токен
+      operationId: getUserInfo
+      responses:
+        "200":
+          description: Данные пользователя получены (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        "500":
+          description: "Данные пользователя не получены, т.к. токен не валиден (Internal\
+            \ Server Error)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/users/delete:
+    delete:
+      tags:
+        - API по работе с пользователями
+      summary: Удалить пользователя
+      operationId: deleteUser
+      responses:
+        "204":
+          description: Пользователь удален (No Content)
+        "401":
+          description: "Пользователь не удален, т.к. пользователь не авторизован (Unauthorized)"
+        "403":
+          description: "Пользователь не удален, т.к. у пользователя нет прав на эт\
+            о (Forbidden)"
+components:
+  schemas:
+    CarrierDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: "название компании, должно быть уникальным"
+        phone:
+          type: string
+          description: "номер телефона компании, должен быть уникальным"
+      description: все найденные перевозчики
+    RouteDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        departure:
+          type: string
+          description: пункт отправления
+        destination:
+          type: string
+          description: пункт назначения
+        carrier:
+          $ref: '#/components/schemas/CarrierDto'
+        durations_min:
+          type: integer
+          description: время в пути (в минутах)
+          format: int32
+      description: все найденные маршруты
+    TicketDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        route:
+          $ref: '#/components/schemas/RouteDto'
+        departure_date_time:
+          type: string
+          description: дата и время отправления
+          format: date-time
+        place_number:
+          type: integer
+          description: номер места
+          format: int32
+        price:
+          type: integer
+          description: стоимость билета
+          format: int32
+        reserved:
+          type: string
+          description: резерв места
+          enum:
+            - FREE
+            - BUSY
+      description: все найденные билеты
+    CreateTicket:
+      required:
+        - departure_date_time
+        - place_number
+        - price
+        - route_id
+      type: object
+      properties:
+        route_id:
+          type: integer
+          description: идентификатор маршрута
+          format: int64
+        departure_date_time:
+          type: string
+          description: "дата и время отправления, вводить в формате: дд.мм.гггг чч\
+            :мм"
+          format: date-time
+        place_number:
+          type: integer
+          description: номер места
+          format: int32
+        price:
+          type: integer
+          description: стоимость билета
+          format: int32
+    CreateRoute:
+      required:
+        - carrier
+        - departure
+        - destination
+        - durations_min
+      type: object
+      properties:
+        departure:
+          type: string
+          description: пункт отправления
+        destination:
+          type: string
+          description: пункт назначения
+        carrier:
+          type: integer
+          description: перевозчик
+          format: int64
+        durations_min:
+          type: integer
+          description: время в пути (в минутах)
+          format: int32
+    CreateCarrier:
+      required:
+        - name
+        - phone
+      type: object
+      properties:
+        name:
+          type: string
+          description: "название компании, должно быть уникальным"
+        phone:
+          pattern: "^[+][7][0-9]{10}$"
+          type: string
+          description: "номер телефона компании, должен быть уникальным, в формате\
+            : +79991234567"
+    RefreshJwtRequest:
+      required:
+        - refreshToken
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        access_token:
+          type: string
+          description: токен для доступа
+        refresh_token:
+          type: string
+          description: токен для обновления токена для доступа
+    RegisterRequest:
+      required:
+        - email
+        - first_name
+        - last_name
+        - password
+      type: object
+      properties:
+        first_name:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: имя пользователя
+        last_name:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: фамилия пользователя
+        email:
+          type: string
+          description: email пользователя
+        password:
+          maxLength: 30
+          minLength: 8
+          type: string
+          description: пароль пользователя
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+          description: логин пользователя
+        password:
+          type: string
+          description: пароль пользователя
+          writeOnly: true
+        email:
+          type: string
+          description: почта пользователя
+        role:
+          type: string
+          description: роль пользователя
+          enum:
+            - ADMIN
+            - USER
+        first_name:
+          type: string
+          description: имя пользователя
+        last_name:
+          type: string
+          description: фамилия пользователя
+        enabled:
+          type: boolean
+          description: доступ пользователя
+        created_at:
+          type: string
+          description: дата регистрации пользователя
+          format: date-time
+        updated_at:
+          type: string
+          description: дата изменения информации о пользователе
+          format: date-time
+    LoginRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: логин
+        password:
+          type: string
+          description: пароль
+    UpdateUserDto:
+      type: object
+      properties:
+        username:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: логин пользователя
+        email:
+          type: string
+          description: почта пользователя
+        first_name:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: имя пользователя
+        last_name:
+          maxLength: 30
+          minLength: 2
+          type: string
+          description: фамилия пользователя
+    UpdateTicket:
+      type: object
+      properties:
+        route:
+          type: integer
+          description: информация о маршруте
+          format: int64
+        departure_date_time:
+          type: string
+          description: "дата и время отправления, вводить в формате: дд.мм.гггг чч\
+            :мм"
+          format: date-time
+        place_number:
+          type: integer
+          description: номер места
+          format: int32
+        price:
+          type: integer
+          description: стоимость билета
+          format: int32
+        reserved:
+          type: string
+          description: резерв места
+          enum:
+            - FREE
+            - BUSY
+    BuyerDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+          description: имя пользователя
+        last_name:
+          type: string
+          description: фамилия пользователя
+      description: информация о покупателе
+    BuyerTicketDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        route:
+          $ref: '#/components/schemas/RouteDto'
+        buyer:
+          $ref: '#/components/schemas/BuyerDto'
+        departure_date_time:
+          type: string
+          description: дата и время отправления
+          format: date-time
+        place_number:
+          type: integer
+          description: номер места
+          format: int32
+        price:
+          type: integer
+          description: стоимость билета
+          format: int32
+    UpdateRoute:
+      type: object
+      properties:
+        departure:
+          type: string
+          description: пункт отправления
+        destination:
+          type: string
+          description: пункт назначения
+        carrier:
+          type: integer
+          description: перевозчик
+          format: int64
+        durations_min:
+          type: integer
+          description: время в пути (в минутах)
+          format: int32
+    UpdateCarrier:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "название компании, должно быть уникальным"
+        phone:
+          pattern: "^[+][7][0-9]{10}$"
+          type: string
+          description: "номер телефона компании, должен быть уникальным, в формате\
+            : +79991234567"
+    ResponseWrapperUsers:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: общее количество пользователей
+          format: int64
+        results:
+          type: array
+          description: все найденные пользователи
+          items:
+            $ref: '#/components/schemas/UserDto'
+    ResponseWrapperTickets:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: общее количество билетов
+          format: int64
+        results:
+          type: array
+          description: все найденные билеты
+          items:
+            $ref: '#/components/schemas/TicketDto'
+    ResponseWrapperBuyerTickets:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: общее количество билетов
+          format: int64
+        results:
+          type: array
+          description: все найденные билеты
+          items:
+            $ref: '#/components/schemas/BuyerTicketDto'
+    ResponseWrapperRoutes:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: общее количество маршрутов
+          format: int64
+        results:
+          type: array
+          description: все найденные маршруты
+          items:
+            $ref: '#/components/schemas/RouteDto'
+    ResponseWrapperCarriers:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: общее количество перевозчиков
+          format: int64
+        results:
+          type: array
+          description: все найденные перевозчики
+          items:
+            $ref: '#/components/schemas/CarrierDto'
