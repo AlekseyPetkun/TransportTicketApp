@@ -380,8 +380,6 @@ public class TicketDaoImpl implements EntityDAO<Ticket> {
 
     public Long count() {
 
-        Long count = null;
-
         try (final Connection connection = DriverManager.getConnection(url, user, password);
              PreparedStatement statement = connection.prepareStatement(
 
@@ -393,14 +391,14 @@ public class TicketDaoImpl implements EntityDAO<Ticket> {
 
             ResultSet resultSet = statement.executeQuery();
 
-            resultSet.next();
-            count = resultSet.getLong("recordCount");
-            resultSet.close();
+            if (resultSet.next()) {
+                return resultSet.getLong("recordCount");
+            }
 
         } catch (SQLException e) {
             log.error("SQLException in searchById method ", e);
         }
 
-        return count;
+        return null;
     }
 }
