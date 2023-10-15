@@ -4,6 +4,7 @@ import com.github.alekseypetkun.TransportTicketApp.constant.Role;
 import com.github.alekseypetkun.TransportTicketApp.dao.impl.UserDaoImpl;
 import com.github.alekseypetkun.TransportTicketApp.dto.*;
 import com.github.alekseypetkun.TransportTicketApp.exception.AuthenticationException;
+import com.github.alekseypetkun.TransportTicketApp.exception.EntityAlreadyExistsException;
 import com.github.alekseypetkun.TransportTicketApp.mapper.UserMapper;
 import com.github.alekseypetkun.TransportTicketApp.model.*;
 import com.github.alekseypetkun.TransportTicketApp.security.PBFDK2PasswordEncoder;
@@ -11,12 +12,15 @@ import com.github.alekseypetkun.TransportTicketApp.security.custom.CustomUserDet
 import com.github.alekseypetkun.TransportTicketApp.security.custom.CustomUserDetailsService;
 import com.github.alekseypetkun.TransportTicketApp.security.jwt.*;
 import com.github.alekseypetkun.TransportTicketApp.service.AuthService;
+import com.github.alekseypetkun.TransportTicketApp.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +50,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDto registerUser(RegisterRequest dto) {
+
+        User check = userDao.findByUsername(dto.getEmail());
+        if (check != null) {
+            throw new EntityAlreadyExistsException(dto.getEmail());
+        }
 
         User user = userMapper.map(dto);
         user.setEnabled(true);
