@@ -12,6 +12,9 @@ import com.github.alekseypetkun.TransportTicketApp.security.custom.CustomUserDet
 import com.github.alekseypetkun.TransportTicketApp.security.jwt.*;
 import com.github.alekseypetkun.TransportTicketApp.service.AuthService;
 import io.jsonwebtoken.Claims;
+import jakarta.validation.Valid;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
