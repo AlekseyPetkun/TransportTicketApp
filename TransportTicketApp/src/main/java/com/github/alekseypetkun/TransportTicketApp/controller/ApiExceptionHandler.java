@@ -1,6 +1,7 @@
 package com.github.alekseypetkun.TransportTicketApp.controller;
 
 import com.github.alekseypetkun.TransportTicketApp.exception.*;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,13 +22,19 @@ import java.util.Date;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status,
                                                                   WebRequest request) {
+
         ErrorDetails errorDetails = new ErrorDetails(new Date(), "Ошибка валидации!",
-                ex.getBindingResult().toString());
+                e.getBindingResult().toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<String> handleEntityAlreadyExistsException(EntityAlreadyExistsException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler
