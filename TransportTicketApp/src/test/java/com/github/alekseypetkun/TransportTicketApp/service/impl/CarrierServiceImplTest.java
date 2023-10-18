@@ -6,6 +6,8 @@ import com.github.alekseypetkun.TransportTicketApp.dto.CarrierDto;
 import com.github.alekseypetkun.TransportTicketApp.dto.CreateCarrier;
 import com.github.alekseypetkun.TransportTicketApp.dto.ResponseWrapperCarriers;
 import com.github.alekseypetkun.TransportTicketApp.dto.UpdateCarrier;
+import com.github.alekseypetkun.TransportTicketApp.exception.AuthorisationException;
+import com.github.alekseypetkun.TransportTicketApp.exception.NotFoundCarrierException;
 import com.github.alekseypetkun.TransportTicketApp.mapper.CarrierMapper;
 import com.github.alekseypetkun.TransportTicketApp.model.Carrier;
 import com.github.alekseypetkun.TransportTicketApp.model.User;
@@ -16,16 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,9 +30,6 @@ class CarrierServiceImplTest {
 
     @Mock
     private CarrierDaoImpl carrierDao;
-
-    @Mock
-    private Connection connection;
 
     @Mock
     private CarrierMapper carrierMapper;
@@ -123,6 +115,7 @@ class CarrierServiceImplTest {
 
         // Определяем результат, который вернет метод carrierService.updateCarrier()
         when(carrierDao.searchById(carrierId)).thenReturn(carrier);
+        doNothing().when(carrierDao).updateEntity(carrier);
         when(carrierMapper.map(carrier)).thenReturn(expectedDto);
 
         // Вызываем метод carrierService.updateCarrier()
@@ -132,6 +125,7 @@ class CarrierServiceImplTest {
         assertNotNull(result);
         assertEquals("Update Carrier", result.getName());
         assertEquals("1234567890", result.getPhone());
+        verify(carrierDao, times(1)).updateEntity(carrier);
     }
 
     @Test
@@ -184,5 +178,100 @@ class CarrierServiceImplTest {
         assertEquals(totalAmount, result.getCount());
 //        assertEquals(dtoList, result.getResults());
         assertEquals(3, result.getResults().size());
+    }
+
+    @Test
+    void deleteCarriers() {
+
+        // Создаем тестовые данные для пользователя с правами доступа
+        Long userId = 1L;
+        User admin = new User();
+        admin.setId(userId);
+        admin.setRole(Role.ADMIN);
+
+        // Определяем результат, который вернет метод userService.findUserById()
+        when(userService.findUserById(userId)).thenReturn(admin);
+        // Определяем результат, который вернет метод authService.checkAccess()
+        when(authService.checkAccess(admin)).thenReturn(true);
+
+        // Создаем тестовые данные для сущности Carrier
+        Long carrierId = 1L;
+        Carrier carrier = new Carrier();
+        carrier.setId(carrierId);
+        carrier.setName("Test Carrier");
+        carrier.setPhone("1234567890");
+
+        // Определяем результат, который вернет метод carrierService.deleteCarrier()
+        when(carrierDao.searchById(anyLong())).thenReturn(carrier);
+        doNothing().when(carrierDao).deleteEntityById(carrierId);
+
+        // Вызываем метод carrierService.deleteCarrier()
+        carrierService.deleteCarrier(carrier.getId(), userId);
+
+        // и проверяем результат
+        verify(carrierDao, times(1)).deleteEntityById(carrier.getId());
+    }
+
+    @Test
+    public void testFindCarrierById() {
+
+        // Создаем тестовые данные для сущности Carrier
+        Long carrierId = 1L;
+        Carrier carrier = new Carrier();
+        carrier.setId(carrierId);
+        when(carrierDao.searchById(carrierId)).thenReturn(carrier);
+
+        // Вызываем метод carrierService.findCarrierById()
+        Carrier result = carrierService.findCarrierById(carrierId);
+
+        // и проверяем результат
+        assertEquals(carrierId, result.getId());
+    }
+
+    @Test
+    public void testFindCarrierByIdNotFound() {
+
+        // Создаем тестовые данные для сущности Carrier
+        Long carrierId = 2L;
+        when(carrierDao.searchById(carrierId)).thenReturn(null);
+
+        // и проверяем результат
+        assertThrows(NotFoundCarrierException.class, () ->
+            carrierService.findCarrierById(carrierId));
+    }
+
+    @Test
+    public void shouldThrowAuthorisationException() {
+
+        // Создаем тестовые данные для пользователя без прав доступа
+        Long userId = 1L;
+        User notAdmin = new User();
+        notAdmin.setId(userId);
+        notAdmin.setRole(Role.USER);
+
+        // Определяем результат, который вернет метод userService.findUserById()
+        when(userService.findUserById(userId)).thenReturn(notAdmin);
+        // Определяем результат, который вернет метод authService.checkAccess()
+        when(authService.checkAccess(notAdmin)).thenReturn(false);
+
+//        when(carrierService.createCarrier(mock(CreateCarrier.class), eq(userId)))
+//                .thenThrow(AuthorisationException.class);
+//        when(carrierService.updateCarrier(mock(UpdateCarrier.class), anyLong(), userId))
+//                .thenThrow(AuthorisationException.class);
+//        when(carrierService.getAllCarriers(any(Integer.class), any(Integer.class), eq(userId)))
+//                .thenThrow(AuthorisationException.class);
+//        doThrow(AuthorisationException.class).when(carrierService).deleteCarrier(any(Long.class), eq(userId));
+
+        assertThrows(AuthorisationException.class, () ->
+                carrierService.createCarrier(any(CreateCarrier.class), userId));
+
+        assertThrows(AuthorisationException.class, () ->
+                carrierService.updateCarrier(mock(UpdateCarrier.class), anyLong(), userId));
+
+//        assertThrows(AuthorisationException.class, () ->
+//                carrierService.getAllCarriers(anyInt(), anyInt(), userId));
+
+        assertThrows(AuthorisationException.class, () ->
+                carrierService.deleteCarrier(anyLong(), userId));
     }
 }
